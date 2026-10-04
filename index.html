@@ -1,0 +1,109 @@
+--- index.html (原始)
+
+
++++ index.html (修改后)
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#08090f">
+  <meta name="description" content="PyOS Studio 5.0 Quantum — модульная браузерная операционная среда на vanilla JS: окна, VFS на IndexedDB, плагины через Blob-импорт, голосовой ассистент Jarvis.">
+  <title>PyOS Studio 5.0 Quantum · Операционная среда</title>
+  <link rel="stylesheet" href="core.css">
+</head>
+<body>
+
+  <noscript>
+    <div class="py-noscript">
+      Для работы PyOS Studio 5.0 Quantum необходимо включить JavaScript.
+    </div>
+  </noscript>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SVG-СПРАЙТ ИКОНОК · 24×24 viewBox · fill="currentColor"
+       Системные иконки + SN-набор. Нумерация id: ic-<name>.
+       ══════════════════════════════════════════════════════════ -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <defs>
+      <linearGradient id="py-gem-a" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffd75e"/><stop offset="1" stop-color="#ff9d2f"/>
+      </linearGradient>
+      <linearGradient id="py-gem-b" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#5ee0ff"/><stop offset="1" stop-color="#2f7bff"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Логотип: двойная змея Python (стилизованная) -->
+    <symbol id="ic-py-logo" viewBox="0 0 24 24">
+      <path fill="url(#py-gem-a)" d="M12.1 2c-2.6 0-4.7.4-6 1.4C4.8 4.5 4.3 6.2 4.3 8v1.7h7.2v.8H5.9c-2.1 0-3.9 1.2-4.5 3.4-.7 2.4-.8 4-.1 6 .6 1.9 2 3 4.1 3h1.7v-2.6c0-1.9 1.7-3.6 3.7-3.6h6.5c1.9 0 3.5-1.6 3.5-3.5V7.4C20.3 5.5 18.7 4 16.7 3.4 15.3 3 13.6 2.9 12.1 2Zm-3.5 2.2c.8 0 1.4.6 1.4 1.4s-.6 1.4-1.4 1.4-1.4-.6-1.4-1.4.6-1.4 1.4-1.4Z"/>
+      <path fill="url(#py-gem-b)" d="M11.9 22c2.6 0 4.7-.4 6-1.4 1.3-1.1 1.8-2.8 1.8-4.6v-1.7h-7.2v-.8h5.6c2.1 0 3.9-1.2 4.5-3.4.7-2.4.8-4 .1-6C22.1 4.2 20.7 3 18.6 3h-1.7v2.6c0 1.9-1.7 3.6-3.7 3.6H6.7c-1.9 0-3.5 1.6-3.5 3.5v5.3c0 1.9 1.6 3.4 3.6 4 1.4.4 3.1.5 4.6.5Zm3.5-2.2c-.8 0-1.4-.6-1.4-1.4s.6-1.4 1.4-1.4 1.4.6 1.4 1.4-.6 1.4-1.4 1.4Z"/>
+    </symbol>
+
+    <!-- ═══ СИСТЕМНЫЕ ИКОНКИ ═══ -->
+    <symbol id="ic-term" viewBox="0 0 24 24"><path d="M3 4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4Zm2 0v16h14V4H5Zm2.7 3.3 4 4-4 4L6.9 14l2.6-2.7-2.6-2.7 1.4-1.3ZM12 14h5v2h-5v-2Z"/></symbol>
+    <symbol id="ic-files" viewBox="0 0 24 24"><path d="M3 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Zm2 0v10h14V8h-7.2L10.2 6H5Z"/></symbol>
+    <symbol id="ic-code" viewBox="0 0 24 24"><path d="M8.7 5.3 3 11l5.7 5.7 1.4-1.4L5.8 11l4.3-4.3-1.4-1.4Zm6.6 0-1.4 1.4L18.2 11l-4.3 4.3 1.4 1.4L21 11 15.3 5.3Z"/></symbol>
+    <symbol id="ic-calc" viewBox="0 0 24 24"><path d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5Zm1 3h12v3H6V6Zm.5 5.5A1.5 1.5 0 1 1 5 13a1.5 1.5 0 0 1 2.5-1.5Zm5 0A1.5 1.5 0 1 1 10 13a1.5 1.5 0 0 1 2.5-1.5Zm5 0A1.5 1.5 0 1 1 15 13a1.5 1.5 0 0 1 2.5-1.5ZM5.5 16A1.5 1.5 0 1 1 4 17.5 1.5 1.5 0 0 1 5.5 16Zm5 0A1.5 1.5 0 1 1 9 17.5 1.5 1.5 0 0 1 10.5 16Zm5 0a1.5 1.5 0 1 1 0 3Z"/></symbol>
+    <symbol id="ic-notes" viewBox="0 0 24 24"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6H6Zm0 2h7v5h5v9H6V4Zm2 8h8v2H8v-2Zm0 4h5v2H8v-2Z"/></symbol>
+    <symbol id="ic-gear" viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"/><path d="M10.6 2h2.8l.5 2.6 1.5.6 2.1-1.6 2 2-1.6 2.1.6 1.5 2.5.5v2.8l-2.5.5-.6 1.5 1.6 2.1-2 2-2.1-1.6-1.5.6-.5 2.5h-2.8l-.5-2.5-1.5-.6-2.1 1.6-2-2 1.6-2.1-.6-1.5L2 13.2v-2.8l2.6-.5.6-1.5L3.6 6.3l2-2 2.1 1.6 1.4-.6L10.6 2Z"/></symbol>
+    <symbol id="ic-info" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm0 3a1.2 1.2 0 1 0 0 2.4A1.2 1.2 0 0 0 12 7Zm-1 5h2v6h-2v-6Z"/></symbol>
+    <symbol id="ic-plug" viewBox="0 0 24 24"><path d="M9 2v6H7v3a5 5 0 0 0 4 4.9V22h2v-6.1A5 5 0 0 0 17 11V8h-2V2h-2v6h-2V2H9Z"/></symbol>
+    <symbol id="ic-mic" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3Zm-7 9a7 7 0 0 0 6 6.9V22h2v-4.1A7 7 0 0 0 19 11h-2a5 5 0 0 1-10 0H5Z"/></symbol>
+    <symbol id="ic-power" viewBox="0 0 24 24"><path d="M11 2h2v10h-2V2Z"/><path d="M12 4a8 8 0 1 0 6.3 13l-1.6-1.2A6 6 0 1 1 12 6c1.5 0 2.9.4 4 1.2l1.6-1.2A8 8 0 0 0 12 4Z" transform="translate(0 -1) scale(1.02)"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 24 24"><path d="M10 3a7 7 0 1 0 4.2 12.6l4.1 4.2 1.4-1.5-4.1-4.1A7 7 0 0 0 10 3Zm0 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10Z"/></symbol>
+    <symbol id="ic-lock" viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 1 5 5v2h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v2h6V7a3 3 0 0 0-3-3Zm0 8a2 2 0 0 0-1 3.7V17h2v-1.3A2 2 0 0 0 12 12Z"/></symbol>
+    <symbol id="ic-restart" viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 1-7.4 11l1.8.7A6 6 0 1 0 12 6c-1.4 0-2.7.5-3.7 1.3L10 9H4V3l2.2 2.2A8 8 0 0 1 12 4Z"/></symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5Z"/></symbol>
+    <symbol id="ic-trash" viewBox="0 0 24 24"><path d="M9 3h6l1 2h4v2H4V5h4l1-2ZM6 9h12l-1 12H7L6 9Z"/></symbol>
+    <symbol id="ic-edit" viewBox="0 0 24 24"><path d="M4 15.5V20h4.5L19 9.5 14.5 5 4 15.5Zm12.6-12.6 2.5 2.5 1.4-1.4a1.8 1.8 0 0 0-2.5-2.5l-1.4 1.4Z"/></symbol>
+    <symbol id="ic-folder" viewBox="0 0 24 24"><path d="M3 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/></symbol>
+    <symbol id="ic-file" viewBox="0 0 24 24"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6H6Zm8 1.5 4.5 4.5H14V3.5Z"/></symbol>
+    <symbol id="ic-pyfile" viewBox="0 0 24 24"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6H6Zm8 1.5 4.5 4.5H14V3.5ZM10 12h1.5v5H10v-5Zm3.5 0H15v5h-1.5v-5Z"/></symbol>
+    <symbol id="ic-doc" viewBox="0 0 24 24"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6H6Zm8 1.5 4.5 4.5H14V3.5ZM8 12h8v1.5H8V12Zm0 3.5h8V17H8v-1.5Z"/></symbol>
+    <symbol id="ic-play" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5-13-7.5Z"/></symbol>
+    <symbol id="ic-save" viewBox="0 0 24 24"><path d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8l-5-5H5Zm7 3h2v5h-2V6ZM7 13h10v6H7v-6Z"/></symbol>
+    <symbol id="ic-refresh" viewBox="0 0 24 24"><path d="M12 4a8 8 0 0 1 7.4 11l-1.8-.7A6 6 0 1 0 12 18l.1-2c1.3 0 2.5-.5 3.5-1.3L14 13h6v6l-2.2-2.2A8 8 0 1 1 12 4Z"/></symbol>
+    <symbol id="ic-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 1 9 9c0 4.9-4 6.5-6.5 6.5-1.4 0-2-.8-2-1.7 0-1 .8-1.4.8-2.4 0-.9-.7-1.4-1.6-1.4H11A5 5 0 0 1 6 8c0-3 2.7-5 6-5Zm-4 6a1.3 1.3 0 1 0 0 2.6A1.3 1.3 0 0 0 8 9Zm3-2.5a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Zm5 .5a1.3 1.3 0 1 1-2.6 0 1.3 1.3 0 0 1 2.6 0Zm2 3.5a1.3 1.3 0 1 1-2.6 0 1.3 1.3 0 0 1 2.6 0Z"/></symbol>
+    <symbol id="ic-wave" viewBox="0 0 24 24"><path d="M3 11h2v2H3v-2Zm4-4h2v10H7V7Zm4 2h2v6h-2V9Zm4-4h2v14h-2V5Zm4 6h2v2h-2v-2Z"/></symbol>
+    <symbol id="ic-user" viewBox="0 0 24 24"><path d="M12 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm0 10c4 0 7 2 7 5v2H5v-2c0-3 3-5 7-5Z"/></symbol>
+    <symbol id="ic-star" viewBox="0 0 24 24"><path d="m12 3 2.6 5.6 6 .7-4.5 4 1.3 6L12 16.2 6.6 19.3l1.3-6-4.5-4 6-.7L12 3Z"/></symbol>
+    <symbol id="ic-close" viewBox="0 0 24 24"><path d="m7.4 6 4.6 4.6L16.6 6 18 7.4 13.4 12 18 16.6 16.6 18 12 13.4 7.4 18 6 16.6 10.6 12 6 7.4 7.4 6Z"/></symbol>
+    <symbol id="ic-minus" viewBox="0 0 24 24"><path d="M5 11h14v2H5v-2Z"/></symbol>
+    <symbol id="ic-square" viewBox="0 0 24 24"><path d="M5 5h14v14H5V5Zm2 2v10h10V7H7Z"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><path d="m9.5 16.2-4.7-4.7L6.3 10l3.2 3.2 8-8 1.5 1.5-9.5 9.5Z"/></symbol>
+    <symbol id="ic-x" viewBox="0 0 24 24"><path d="m7.4 6 4.6 4.6L16.6 6 18 7.4 13.4 12 18 16.6 16.6 18 12 13.4 7.4 18 6 16.6 10.6 12 6 7.4 7.4 6Z"/></symbol>
+    <symbol id="ic-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6-1.4-1.4L12.2 12 7.6 7.4 9 6Z"/></symbol>
+    <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 1 6 6v4l2 3v1h-8v-6h6a4 4 0 0 0-8 0v6H4v-1l2-3V9a6 6 0 0 1 6-6Zm-2 15h4a2 2 0 1 1-4 0Z"/></symbol>
+    <symbol id="ic-sun" viewBox="0 0 24 24"><path d="M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0-6h.01V3H12V1Zm0 19h.01v-2H12v2ZM1 12h2v-.01H1V12Zm20 0h2v-.01h-2V12ZM4.2 4.2l1.5 1.4-1.5-1.4Zm14.1 14.1 1.5 1.4-1.5-1.4ZM19.8 4.2l-1.4 1.5 1.4-1.5ZM5.7 18.3l-1.4 1.5 1.4-1.5Z"/></symbol>
+    <symbol id="ic-wifi" viewBox="0 0 24 24"><path d="M12 18.5a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6ZM5.5 12.6l1.8 1.8a6.5 6.5 0 0 1 9.4 0l1.8-1.8a9 9 0 0 0-13 0ZM2 9.1l1.8 1.8a11 11 0 0 1 16.4 0L22 9.1a13.5 13.5 0 0 0-20 0Z"/></symbol>
+    <symbol id="ic-volume" viewBox="0 0 24 24"><path d="M4 9h3l5-4v14l-5-4H4V9Zm12.5-.5a4.5 4.5 0 0 1 0 7v-2a2.5 2.5 0 0 0 0-3v-2Z"/></symbol>
+    <symbol id="ic-grid" viewBox="0 0 24 24"><path d="M4 4h6v6H4V4Zm10 0h6v6h-6V4ZM4 14h6v6H4v-6Zm10 0h6v6h-6v-6Z"/></symbol>
+    <symbol id="ic-pin" viewBox="0 0 24 24"><path d="M14.8 2.6a1.8 1.8 0 0 1 2.6 0l4 4a1.8 1.8 0 0 1 0 2.6l-2.2 2.2.6 2.4-2.6 2.6-3.6-3.6-5.8 5.8-1.4-1.4 5.8-5.8L6.2 11l2.6-2.6 2.4.6 2.2-2.2.4-2.8-1-1.4Z"/></symbol>
+    <symbol id="ic-clock" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm-1 3h2v5.4l3.5 2-1 1.7L11 16V7Z"/></symbol>
+
+    <!-- ═══ SN-ИКОНКИ (12) ═══ -->
+    <symbol id="ic-sn-music" viewBox="0 0 24 24"><path d="M20 3v12.2a3.5 3.5 0 1 1-2-3.1V7.5l-8 1.8v7.9a3.5 3.5 0 1 1-2-3.1V6l12-2.7"/><circle cx="8.5" cy="17" r="2.5"/><circle cx="18" cy="17.5" r="2.5"/></symbol>
+    <symbol id="ic-sn-brush" viewBox="0 0 24 24"><path d="M18.4 2.6a2 2 0 0 1 2.9 2.8L13 14.6l-3.6-3.6 9-8.4ZM8 15c-2.5 0-4 1.5-4 3.5 0 1.4-.6 2.2-1.5 2.8 1 .9 2.3 1.2 3.5 1.2 2.8 0 5-2 5-4.5 0-1.5-1-3-3-3Z"/></symbol>
+    <symbol id="ic-sn-calendar" viewBox="0 0 24 24"><path d="M6 3V1.5h2V3h8V1.5h2V3h2a2 2 0 0 1 2 2v3H2V5a2 2 0 0 1 2-2h2ZM2 9h20v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9Zm4 3v2h2v-2H6Zm4 0v2h2v-2h-2Zm4 0v2h2v-2h-2Z"/></symbol>
+    <symbol id="ic-sn-mail" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm0 3.2V18h16V7.2l-8 5-8-5Z"/></symbol>
+    <symbol id="ic-sn-tasks" viewBox="0 0 24 24"><path d="M3 5h8v3H3V5Zm0 5.5h8v3H3v-3ZM3 16h8v3H3v-3Zm11.5-9.5L18 9l3.5-3.5 1.5 1.5-5 5-5-5 1.5-1.5Zm0 9L18 18l3.5-3.5 1.5 1.5-5 5-5-5 1.5-1.5Z"/></symbol>
+    <symbol id="ic-sn-vault" viewBox="0 0 24 24"><path d="M4 3h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm8 4a4.5 4.5 0 0 0-1.4 8.8L10 20h4l-.6-3.2A4.5 4.5 0 0 0 12 7Zm0 2.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"/></symbol>
+    <symbol id="ic-sn-lang" viewBox="0 0 24 24"><path d="M2 4h9v2H8.9c-.4 2.8-1.7 5-3.4 6.6l-1-1.2c1.3-1.2 2.3-2.9 2.8-5.2H2V4Zm12 0h8v2h-3.2l3.7 9.2-1.8.6-1.2-3h-4.4l-1.2 3-1.8-.6L13.7 6H10.6V4h3.4Zm-7.6 5c1 1.8 2.5 3.3 4.3 4.3l-.9 1.5c-1.4-.8-2.6-1.8-3.6-3-1 1.3-2.3 2.4-3.8 3.1L3 16.3c1.4-.7 2.6-1.8 3.4-3.2-.7-.9-1.3-1.9-1.7-3l1.4-1.1Zm8.1.4 1.5 3.8h-3L14.5 9.4Z"/></symbol>
+    <symbol id="ic-sn-pixel" viewBox="0 0 24 24"><path d="M3 3h6v6H3V3Zm6 6h6v6H9V9Zm6-6h6v6h-6V3ZM3 15h6v6H3v-6Zm12 0h6v6h-6v-6Z"/></symbol>
+    <symbol id="ic-sn-alarm" viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm0 2a6 6 0 1 0 0 12 6 6 0 0 0 0-12Zm-.5 2.5h1.5V13l3.5 2-1 1.7-4-2.3V8.5ZM4.6 2.6 7.9 5.9 6.5 7.3 3.2 4 4.6 2.6Zm14.8 0 1.4 1.4-3.3 3.3-1.4-1.4 3.3-3.3Z"/></symbol>
+    <symbol id="ic-sn-game" viewBox="0 0 24 24"><path d="M7.5 7h9a6.5 6.5 0 0 1 6.4 7.7l-.6 3A3.2 3.2 0 0 1 18 19.6l-1.4-1.7h-4.8L10.4 19.6a3.2 3.2 0 0 1-4.3-1.9l-.6-3A6.5 6.5 0 0 1 7.5 7Zm-.5 4H5.5V9.5H4V11H2.5v1.5H4V14h1.5v-1.5H7V11Zm8 .5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm3.5-2a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/></symbol>
+    <symbol id="ic-sn-grid" viewBox="0 0 24 24"><path d="M3 3h18v18H3V3Zm2 2v14h14V5H5Zm2 2h4v4H7V7Zm6 0h4v4h-4V7ZM7 13h4v4H7v-4Zm6 0h4v4h-4v-4Z"/></symbol>
+    <symbol id="ic-sn-qr" viewBox="0 0 24 24"><path d="M3 3h8v8H3V3Zm2 2v4h4V5H5Zm10-2h8v8h-8V3Zm2 2v4h4V5h-4ZM3 13h8v8H3v-8Zm2 2v4h4v-4H5Zm10-2h2v2h-2v-2Zm4 0h2v2h-2v-2Zm-4 4h2v2h-2v-2Zm4 0h2v2h-2v-2Zm-4 4h2v2h-2v-2Zm4 0h2v2h-2v-2Z"/></symbol>
+  </svg>
+
+  <!-- Корневые контейнеры: всё содержимое создаёт JS -->
+  <div id="pyos-root" aria-label="Рабочий стол PyOS"></div>
+  <div id="pyos-modals" role="region" aria-label="Модальные окна"></div>
+  <div id="pyos-toasts" role="status" aria-live="polite" aria-label="Уведомления"></div>
+
+  <script type="module" src="core.js"></script>
+  <script type="module" src="ui.js"></script>
+  <script type="module" src="apps.js"></script>
+</body>
+</html>

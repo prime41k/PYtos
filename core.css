@@ -1,0 +1,1313 @@
+--- core.css (原始)
+
+
++++ core.css (修改后)
+/* ============================================================
+   PyOS Studio 5.0 Quantum · core.css
+   Дизайн-система: reset, tokens, base, components, windows,
+   taskbar, start, apps, modals, overrides, accessibility
+   ============================================================ */
+
+@layer reset, tokens, base, components, windows, taskbar, start, apps, modals, overrides, accessibility;
+
+/* ════════════════════════════════════════════════════════════
+   @property — анимируемые кастомные свойства
+   ════════════════════════════════════════════════════════════ */
+@property --spin-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@property --shine-position {
+  syntax: '<percentage>';
+  initial-value: -40%;
+  inherits: false;
+}
+@property --ripple-scale {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: false;
+}
+
+/* ════════════════════════════════════════════════════════════
+   @layer tokens — дизайн-токены
+   ════════════════════════════════════════════════════════════ */
+@layer tokens {
+  :root {
+    /* Акценты (переключаются Theme.applyAccent) */
+    --acc: #4f8cff;
+    --acc-2: #8a5cff;
+    --acc-tint-1: color-mix(in srgb, var(--acc) 8%, transparent);
+    --acc-tint-2: color-mix(in srgb, var(--acc) 16%, transparent);
+    --acc-tint-3: color-mix(in srgb, var(--acc) 24%, transparent);
+    --acc-glow: color-mix(in srgb, var(--acc) 45%, transparent);
+
+    /* Фоны */
+    --bg-0: #08090f;
+    --bg-1: #0f1219;
+    --bg-2: #161b26;
+    --surface-1: rgba(20, 26, 40, 0.72);
+    --surface-2: rgba(14, 19, 30, 0.86);
+    --surface-3: rgba(28, 35, 52, 0.6);
+
+    /* Текст */
+    --txt-1: #eef2fa;
+    --txt-2: #a8b3c7;
+    --txt-3: #6b7789;
+
+    /* Границы */
+    --edge-1: rgba(255, 255, 255, 0.06);
+    --edge-2: rgba(255, 255, 255, 0.12);
+    --edge-acc: color-mix(in srgb, var(--acc) 40%, transparent);
+
+    /* Статусы */
+    --ok: #3ddc84;
+    --warn: #ffb454;
+    --err: #ff5c7a;
+
+    /* Радиусы Material 3 */
+    --r-xs: 8px;
+    --r-sm: 12px;
+    --r-md: 18px;
+    --r-lg: 24px;
+    --r-xl: 32px;
+    --r-2xl: 40px;
+
+    /* Тени */
+    --shadow-1: 0 4px 12px rgba(0, 0, 0, .3);
+    --shadow-2: 0 16px 40px rgba(0, 0, 0, .45);
+    --shadow-3: 0 32px 90px rgba(0, 0, 0, .6);
+    --shadow-acc: 0 10px 34px color-mix(in srgb, var(--acc) 22%, transparent);
+
+    /* Ease */
+    --ease-spring: cubic-bezier(.22, 1.4, .36, 1);
+    --ease-out: cubic-bezier(.2, .9, .25, 1);
+    --ease-soft: cubic-bezier(.4, 0, .2, 1);
+
+    /* Тайминги */
+    --t-fast: 150ms;
+    --t-med: 250ms;
+    --t-slow: 400ms;
+
+    /* Типографика */
+    --font-ui: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: ui-monospace, 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
+    --fs-caption: 11px;
+    --fs-body: 13px;
+    --fs-title: 15px;
+    --fs-headline: 22px;
+    --fs-hero: 34px;
+
+    /* Служебные */
+    --dock-h: 62px;
+    --noise-url: url("image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  }
+
+  /* Отключение эффектов (settings.fx=false добавляет класс) */
+  :root.py-nofx {
+    --surface-1: rgba(20, 26, 40, 0.97);
+    --surface-2: rgba(14, 19, 30, 0.98);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   @layer reset
+   ════════════════════════════════════════════════════════════ */
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    overflow: hidden;
+    font-family: var(--font-ui);
+    font-size: var(--fs-body);
+    color: var(--txt-1);
+    background: var(--bg-0);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ul, ol { list-style: none; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  button { background: none; border: 0; cursor: pointer; }
+  a { color: var(--acc); text-decoration: none; }
+  img, svg { display: block; }
+  h1, h2, h3, h4 { font-weight: 600; line-height: 1.25; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   @layer base — каркас, обои, утилиты, скроллбары
+   ════════════════════════════════════════════════════════════ */
+@layer base {
+  #pyos-root {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* Обои — чистые CSS-градиенты, слой под всем */
+  .py-wall {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    transition: background var(--t-slow) var(--ease-soft);
+    background: var(--wall-a, linear-gradient(140deg, #0b1026, #101a3a 45%, #0a2540));
+  }
+  .py-wall::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--noise-url);
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+
+  /* 8 обоев */
+  .py-wall[data-wall="aurora"]  { --wall-a: linear-gradient(160deg, #06122b 0%, #0d3a5c 30%, #10635a 55%, #2a1d63 80%, #06122b 100%); }
+  .py-wall[data-wall="sunset"]  { --wall-a: linear-gradient(180deg, #1c0b3a 0%, #6a1e4e 40%, #b8452f 72%, #e08a2e 92%, #1c0b3a 100%); }
+  .py-wall[data-wall="ocean"]   { --wall-a: radial-gradient(120% 90% at 50% 110%, #0e5f8a 0%, #0a3a5c 40%, #051526 100%); }
+  .py-wall[data-wall="matrix"]  { --wall-a: linear-gradient(180deg, #01110a 0%, #04240f 60%, #010a06 100%); }
+  .py-wall[data-wall="carbon"]  { --wall-a: linear-gradient(135deg, #101216 0%, #171a20 50%, #0b0c10 100%); }
+  .py-wall[data-wall="grid"]    { --wall-a: linear-gradient(135deg, #0a0d18, #121830); background-color: #0a0d18; }
+  .py-wall[data-wall="galaxy"]  { --wall-a: radial-gradient(90% 70% at 20% 10%, #2b1a52 0%, transparent 55%), radial-gradient(80% 60% at 85% 80%, #123a63 0%, transparent 60%), linear-gradient(200deg, #05060f, #0d0a1f); }
+  .py-wall[data-wall="cyber"]   { --wall-a: linear-gradient(160deg, #0b0217 0%, #2a0a4a 45%, #06263a 80%, #0b0217 100%); }
+
+  /* Сетка для wallpaper=grid */
+  .py-wall[data-wall="grid"]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--edge-1) 1px, transparent 1px),
+      linear-gradient(90deg, var(--edge-1) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+  /* «Дождь» для matrix */
+  .py-wall[data-wall="matrix"]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(90deg, transparent 0 26px, rgba(61, 220, 132, 0.05) 26px 27px);
+  }
+
+  .py-layer { position: absolute; inset: 0; }
+  .py-layer-win { z-index: 10; }
+  .py-layer-icons { z-index: 5; }
+
+  /* Утилиты */
+  .py-hidden { display: none; }
+  .py-flex { display: flex; align-items: center; }
+  .py-col { display: flex; flex-direction: column; }
+  .py-grow { flex: 1; min-width: 0; min-height: 0; }
+  .py-center { display: flex; align-items: center; justify-content: center; }
+  .py-between { display: flex; align-items: center; justify-content: space-between; }
+  .py-gap-8 { gap: 8px; }
+  .py-gap-12 { gap: 12px; }
+  .py-gap-16 { gap: 16px; }
+  .py-pad-16 { padding: 16px; }
+  .py-txt-2 { color: var(--txt-2); }
+  .py-txt-3 { color: var(--txt-3); }
+  .py-mono { font-family: var(--font-mono); }
+  .py-trunc { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .py-scroll { overflow: auto; overscroll-behavior: contain; }
+  .py-cv { content-visibility: auto; contain-intrinsic-size: auto 200px; }
+
+  /* Иконка из спрайта */
+  .py-ic { width: 20px; height: 20px; fill: currentColor; flex: none; }
+  .py-ic--sm { width: 16px; height: 16px; }
+  .py-ic--lg { width: 28px; height: 28px; }
+  .py-ic--xl { width: 44px; height: 44px; }
+
+  /* Скроллбары */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--edge-2);
+    border-radius: 99px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover { background-color: color-mix(in srgb, var(--acc) 50%, transparent); }
+
+  ::selection { background: var(--acc-tint-3); color: var(--txt-1); }
+
+  :focus-visible {
+    outline: 2px solid var(--acc);
+    outline-offset: 2px;
+    border-radius: var(--r-xs);
+  }
+
+  .py-noscript {
+    position: fixed; inset: 0; display: grid; place-items: center;
+    padding: 24px; text-align: center; color: var(--txt-1);
+    background: var(--bg-0); font-size: var(--fs-title);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   @layer components — кнопки, поля, карточки, тумблеры…
+   ════════════════════════════════════════════════════════════ */
+@layer components {
+  /* Кнопки */
+  .py-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 18px;
+    border-radius: 99px;
+    background: var(--acc-tint-2);
+    color: var(--txt-1);
+    border: 1px solid var(--edge-acc);
+    font-size: var(--fs-body);
+    cursor: pointer;
+    transition: background var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-spring), box-shadow var(--t-fast);
+    position: relative;
+    overflow: hidden;
+  }
+  .py-btn:hover { background: var(--acc-tint-3); box-shadow: var(--shadow-acc); }
+  .py-btn:active { transform: scale(0.96); }
+  .py-btn--filled { background: var(--acc); color: #fff; border-color: transparent; }
+  .py-btn--filled:hover { background: color-mix(in srgb, var(--acc) 85%, white); }
+  .py-btn--ghost { background: transparent; border-color: var(--edge-2); }
+  .py-btn--ghost:hover { background: var(--acc-tint-1); }
+  .py-btn--danger { background: color-mix(in srgb, var(--err) 18%, transparent); border-color: color-mix(in srgb, var(--err) 45%, transparent); color: var(--err); }
+  .py-btn--danger:hover { background: color-mix(in srgb, var(--err) 30%, transparent); }
+  .py-btn:disabled { opacity: 0.45; pointer-events: none; }
+
+  /* Тактильная кнопка-иконка */
+  .py-tbtn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px;
+    border-radius: var(--r-sm);
+    color: var(--txt-2);
+    transition: background var(--t-fast), color var(--t-fast), transform var(--t-fast) var(--ease-spring);
+  }
+  .py-tbtn:hover { background: var(--acc-tint-2); color: var(--txt-1); }
+  .py-tbtn:active { transform: scale(0.9); }
+  .py-tbtn[aria-pressed="true"] { background: var(--acc-tint-3); color: var(--acc); }
+
+  /* Ripple-слой (Material state layer) */
+  .py-ripple {
+    position: absolute; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle, rgba(255,255,255,0.35) 0%, transparent 70%);
+    animation: ripple 480ms var(--ease-out) forwards;
+    transform: scale(0);
+  }
+
+  /* Поля ввода */
+  .py-input, .py-area, .py-select {
+    width: 100%;
+    padding: 9px 14px;
+    border-radius: var(--r-sm);
+    background: var(--bg-2);
+    border: 1px solid var(--edge-2);
+    color: var(--txt-1);
+    font-size: var(--fs-body);
+    transition: border-color var(--t-fast), box-shadow var(--t-fast);
+  }
+  .py-input:focus, .py-area:focus, .py-select:focus {
+    outline: none;
+    border-color: var(--acc);
+    box-shadow: 0 0 0 3px var(--acc-tint-2);
+  }
+  .py-area { resize: vertical; min-height: 80px; line-height: 1.5; }
+  .py-select option { background: var(--bg-2); }
+
+  .py-field { display: flex; flex-direction: column; gap: 6px; }
+  .py-field > label { font-size: var(--fs-caption); color: var(--txt-3); letter-spacing: 0.4px; text-transform: uppercase; }
+
+  /* Карточки */
+  .py-card {
+    background: var(--surface-3);
+    border: 1px solid var(--edge-1);
+    border-radius: var(--r-md);
+    padding: 16px;
+    transition: border-color var(--t-fast), transform var(--t-fast) var(--ease-out);
+  }
+  .py-card:hover { border-color: var(--edge-2); }
+  .py-card--lift:hover { transform: translateY(-2px); box-shadow: var(--shadow-1); }
+
+  /* Тумблер */
+  .py-sw {
+    position: relative;
+    width: 44px; height: 24px;
+    border-radius: 99px;
+    background: var(--edge-2);
+    cursor: pointer;
+    transition: background var(--t-med) var(--ease-out);
+    flex: none;
+  }
+  .py-sw::after {
+    content: '';
+    position: absolute; top: 3px; left: 3px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--txt-2);
+    transition: transform var(--t-med) var(--ease-spring), background var(--t-med);
+  }
+  .py-sw[aria-checked="true"] { background: var(--acc); }
+  .py-sw[aria-checked="true"]::after { transform: translateX(20px); background: #fff; }
+
+  /* Чипы и теги */
+  .py-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px;
+    border-radius: 99px;
+    background: var(--acc-tint-1);
+    border: 1px solid var(--edge-1);
+    color: var(--txt-2);
+    font-size: var(--fs-caption);
+    cursor: pointer;
+    transition: background var(--t-fast), color var(--t-fast);
+  }
+  .py-chip:hover { background: var(--acc-tint-2); color: var(--txt-1); }
+  .py-chip[aria-pressed="true"] { background: var(--acc); color: #fff; border-color: transparent; }
+
+  /* Заметка / инфо-плашка */
+  .py-note {
+    padding: 10px 14px;
+    border-radius: var(--r-sm);
+    background: var(--acc-tint-1);
+    border-left: 3px solid var(--acc);
+    color: var(--txt-2);
+    font-size: var(--fs-body);
+  }
+  .py-note--warn { border-left-color: var(--warn); background: color-mix(in srgb, var(--warn) 10%, transparent); }
+  .py-note--err  { border-left-color: var(--err);  background: color-mix(in srgb, var(--err) 10%, transparent); }
+
+  /* Табы */
+  .py-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--edge-1); padding: 0 8px; }
+  .py-tab {
+    padding: 10px 16px;
+    color: var(--txt-3);
+    border-bottom: 2px solid transparent;
+    font-size: var(--fs-body);
+    transition: color var(--t-fast), border-color var(--t-fast);
+  }
+  .py-tab:hover { color: var(--txt-1); }
+  .py-tab[aria-selected="true"] { color: var(--acc); border-bottom-color: var(--acc); }
+
+  /* Прогресс-бар */
+  .py-prog { width: 100%; height: 6px; border-radius: 99px; background: var(--edge-1); overflow: hidden; }
+  .py-prog > i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--acc), var(--acc-2)); transition: width var(--t-med) var(--ease-out); }
+
+  /* Слайдер */
+  .py-range { -webkit-appearance: none; appearance: none; width: 100%; height: 20px; background: transparent; cursor: pointer; }
+  .py-range::-webkit-slider-runnable-track { height: 5px; border-radius: 99px; background: var(--edge-2); }
+  .py-range::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 16px; height: 16px; margin-top: -5.5px;
+    border-radius: 50%; background: var(--acc);
+    box-shadow: 0 0 0 4px var(--acc-tint-1);
+    transition: box-shadow var(--t-fast);
+  }
+  .py-range::-webkit-slider-thumb:hover { box-shadow: 0 0 0 7px var(--acc-tint-2); }
+  .py-range::-moz-range-track { height: 5px; border-radius: 99px; background: var(--edge-2); }
+  .py-range::-moz-range-thumb { width: 16px; height: 16px; border: 0; border-radius: 50%; background: var(--acc); }
+
+  /* Сегмент-контрол */
+  .py-seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 99px; background: var(--bg-2); border: 1px solid var(--edge-1); }
+  .py-seg > button { padding: 6px 14px; border-radius: 99px; color: var(--txt-3); font-size: var(--fs-caption); transition: all var(--t-fast); }
+  .py-seg > button[aria-pressed="true"] { background: var(--acc); color: #fff; }
+
+  /* Разделитель, заголовок секции */
+  .py-sep { height: 1px; background: var(--edge-1); margin: 12px 0; border: 0; }
+  .py-h-sec { font-size: var(--fs-caption); letter-spacing: 1px; text-transform: uppercase; color: var(--txt-3); margin: 18px 0 10px; }
+
+  mark.py-mark { background: var(--acc-tint-3); color: var(--txt-1); border-radius: 4px; padding: 0 2px; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   @layer windows — оконный менеджер
+   ════════════════════════════════════════════════════════════ */
+@layer windows {
+  .py-win {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    min-width: 320px;
+    min-height: 200px;
+    border-radius: var(--r-lg);
+    background: var(--surface-1);
+    backdrop-filter: blur(26px) saturate(160%);
+    -webkit-backdrop-filter: blur(26px) saturate(160%);
+    box-shadow: var(--shadow-2);
+    border: 1px solid var(--edge-1);
+    overflow: hidden;
+    will-change: transform;
+    container-type: inline-size;
+  }
+  :root.py-nofx .py-win { backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+  /* Вращающаяся conic-обводка (только фокусное окно) */
+  .py-win::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--spin-angle), transparent 0%, var(--acc) 12%, transparent 26%, transparent 55%, var(--acc-2) 68%, transparent 82%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--t-med);
+  }
+  .py-win.is-focus::before { opacity: 1; animation: spin 6s linear infinite; }
+  .py-win.is-focus { box-shadow: var(--shadow-3), 0 0 0 1px var(--edge-acc), 0 24px 60px color-mix(in srgb, var(--acc) 12%, transparent); }
+
+  /* Тень-«кома» под активным окном */
+  .py-win::after {
+    content: '';
+    position: absolute;
+    left: 12%; right: 12%; bottom: -26px; height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, var(--acc-glow), transparent 70%);
+    filter: blur(10px);
+    opacity: 0;
+    transition: opacity var(--t-med);
+    pointer-events: none;
+    z-index: -1;
+  }
+  .py-win.is-focus::after { opacity: 0.5; }
+
+  .py-win.is-min { display: none; }
+  .py-win.is-drag { transition: none; user-select: none; }
+  .py-win.is-closing { animation: scaleOut var(--t-fast) var(--ease-soft) forwards; }
+
+  /* 6 направлений открытия */
+  .py-win.sn-open-0 { animation: slideUp    var(--t-med) var(--ease-spring) both; }
+  .py-win.sn-open-1 { animation: slideDown  var(--t-med) var(--ease-spring) both; }
+  .py-win.sn-open-2 { animation: slideLeft  var(--t-med) var(--ease-spring) both; }
+  .py-win.sn-open-3 { animation: slideRight var(--t-med) var(--ease-spring) both; }
+  .py-win.sn-open-4 { animation: scaleIn    var(--t-med) var(--ease-spring) both; }
+  .py-win.sn-open-5 { animation: fadeIn     var(--t-med) var(--ease-out) both; }
+
+  /* Заголовок окна */
+  .py-titlebar {
+    display: flex; align-items: center; gap: 10px;
+    height: 44px; padding: 0 8px 0 14px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--edge-1);
+    cursor: grab;
+    touch-action: none;
+    flex: none;
+  }
+  .py-titlebar:active { cursor: grabbing; }
+  .py-titlebar .py-wtitle { font-size: var(--fs-body); font-weight: 600; letter-spacing: 0.2px; }
+  .py-titlebar .py-wctl { display: flex; gap: 2px; margin-left: auto; }
+  .py-win:not(.is-focus) .py-titlebar .py-wctl { opacity: 0.55; }
+  .py-wdot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--txt-3); flex: none;
+    transition: background var(--t-fast), box-shadow var(--t-fast);
+  }
+  .py-wdot.is-dirty { background: var(--warn); box-shadow: 0 0 6px var(--warn); }
+  .py-wdot.is-saved { background: var(--ok); }
+
+  .py-wbody { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+
+  /* Ручки ресайза — 8 направлений */
+  .py-resize { position: absolute; z-index: 3; touch-action: none; }
+  .py-resize[data-dir="n"]  { top: -3px;    left: 12px; right: 12px; height: 7px;  cursor: ns-resize; }
+  .py-resize[data-dir="s"]  { bottom: -3px; left: 12px; right: 12px; height: 7px;  cursor: ns-resize; }
+  .py-resize[data-dir="w"]  { left: -3px;   top: 12px; bottom: 12px; width: 7px;   cursor: ew-resize; }
+  .py-resize[data-dir="e"]  { right: -3px;  top: 12px; bottom: 12px; width: 7px;   cursor: ew-resize; }
+  .py-resize[data-dir="nw"] { left: -3px; top: -3px; width: 14px; height: 14px; cursor: nwse-resize; }
+  .py-resize[data-dir="ne"] { right: -3px; top: -3px; width: 14px; height: 14px; cursor: nesw-resize; }
+  .py-resize[data-dir="sw"] { left: -3px; bottom: -3px; width: 14px; height: 14px; cursor: nesw-resize; }
+  .py-resize[data-dir="se"] { right: -3px; bottom: -3px; width: 14px; height: 14px; cursor: nwse-resize; }
+
+  /* Snap-ассист — превью зоны */
+  .py-snapzone {
+    position: fixed;
+    z-index: 900;
+    border-radius: var(--r-lg);
+    border: 2px dashed var(--edge-acc);
+    background: var(--acc-tint-1);
+    pointer-events: none;
+    animation: fadeIn var(--t-fast) var(--ease-out) both;
+    inset: 0;
+    clip-path: inset(var(--sz-top, 0%) var(--sz-right, 0%) var(--sz-bottom, 0%) var(--sz-left, 0%));
+  }
+
+  /* Maximize */
+  .py-win.is-max { border-radius: var(--r-md); }
+
+  @container (max-width: 480px) {
+    .py-titlebar { padding-left: 10px; }
+    .py-titlebar .py-wtitle { font-size: var(--fs-caption); }
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   @layer taskbar — плавающий док
+   ════════════════════════════════════════════════════════════ */
+@layer taskbar {
+  .py-taskbar {
+    position: fixed;
+    left: 14px; right: 14px; bottom: 10px;
+    height: var(--dock-h);
+    z-index: 1000;
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 10px;
+    border-radius: 22px;
+    background: var(--surface-2);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid var(--edge-2);
+    box-shadow: var(--shadow-2);
+    animation: slideUp var(--t-slow) var(--ease-spring) both;
+  }
+  :root.py-nofx .py-taskbar { backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+  .py-startbtn {
+    width: 44px; height: 44px;
+    border-radius: 16px;
+    display: grid; place-items: center;
+    color: var(--acc);
+    background: var(--acc-tint-1);
+    transition: transform var(--t-med) var(--ease-spring), background var(--t-fast), box-shadow var(--t-fast);
+    flex: none;
+  }
+  .py-startbtn:hover { transform: translateY(-3px) scale(1.06); box-shadow: var(--shadow-acc); background: var(--acc-tint-2); }
+  .py-startbtn[aria-expanded="true"] { background: var(--acc); color: #fff; }
+  .py-startbtn .py-ic { width: 26px; height: 26px; }
+
+  .py-dock {
+    display: flex; align-items: center; gap: 4px;
+    margin: 0 auto;
+    height: 100%;
+  }
+  .py-dockitem {
+    position: relative;
+    width: 46px; height: 46px;
+    border-radius: 14px;
+    display: grid; place-items: center;
+    color: var(--txt-2);
+    transition: transform var(--t-med) var(--ease-spring), background var(--t-fast);
+    will-change: transform;
+  }
+  .py-dockitem:hover { background: var(--acc-tint-2); transform: translateY(-6px) scale(1.12); }
+  .py-dockitem .py-ic { width: 24px; height: 24px; }
+  .py-dockitem.is-active { color: var(--txt-1); }
+
+  /* Индикатор открытого окна — точка под иконкой */
+  .py-dockitem::after {
+    content: '';
+    position: absolute; bottom: 2px; left: 50%;
+    width: 5px; height: 5px; margin-left: -2.5px;
+    border-radius: 50%;
+    background: var(--txt-3);
+    transform: scaleX(0);
+    transition: transform var(--t-med) var(--ease-spring), background var(--t-fast);
+  }
+  .py-dockitem.has-win::after { transform: scaleX(1); }
+  .py-dockitem.is-front::after { background: var(--acc); width: 16px; margin-left: -8px; }
+
+  /* Бейдж количества окон */
+  .py-badge {
+    position: absolute; top: 2px; right: 2px;
+    min-width: 16px; height: 16px; padding: 0 4px;
+    border-radius: 99px;
+    background: var(--err);
+    color: #fff;
+    font-size: 10px; font-weight: 700;
+    display: grid; place-items: center;
+    box-shadow: 0 0 0 2px var(--bg-1);
+  }
+
+  .py-tray { display: flex; align-items: center; gap: 4px; flex: none; }
+  .py-tray-clock {
+    display: flex; flex-direction: column; align-items: flex-end;
+    padding: 4px 12px; border-radius: var(--r-sm);
+    cursor: pointer;
+    transition: background var(--t-fast);
+    line-height: 1.2;
+  }
+  .py-tray-clock:hover { background: var(--acc-tint-2); }
+  .py-tray-clock b { font-size: var(--fs-body); font-variant-numeric: tabular-nums; }
+  .py-tray-clock span { font-size: var(--fs-caption); color: var(--txt-3); }
+
+  /* Индикатор рабочих столов (4 точки) */
+  .py-desks { display: flex; gap: 5px; align-items: center; padding: 0 6px; }
+  .py-desks i {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--edge-2);
+    cursor: pointer;
+    transition: all var(--t-fast);
+  }
+  .py-desks i.on { background: var(--acc); transform: scale(1.25); }
+
+  .py-jarvis-orb {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: radial-gradient(circle at 35% 30%, var(--acc-2), var(--acc) 70%);
+    color: #fff;
+    box-shadow: 0 0 0 0 var(--acc-glow);
+    transition: transform var(--t-med) var(--ease-spring);
+    flex: none;
+  }
+  .py-jarvis-orb:hover { transform: scale(1.1); }
+  .py-jarvis-orb.is-listening { animation: pulse 1.4s var(--ease-soft) infinite; }
+
+  @media (max-width: 720px) {
+    .py-taskbar { left: 8px; right: 8px; bottom: 6px; padding: 0 6px; }
+    .py-dockitem { width: 40px; height: 40px; }
+    .py-desks { display: none; }
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   @layer start — центрированное меню Пуск (Material You)
+   ════════════════════════════════════════════════════════════ */
+@layer start {
+  .py-start {
+    position: fixed;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 720px; height: 600px;
+    max-width: 92vw; max-height: 88vh;
+    z-index: 1200;
+    border-radius: 36px;
+    display: flex; flex-direction: column;
+    padding: 26px 30px 18px;
+    gap: 16px;
+    /* 4 слоя стекла: тонировка + blur + шум + conic-обводка (::before) */
+    background:
+      var(--noise-url),
+      linear-gradient(var(--acc-tint-1), var(--acc-tint-1)),
+      rgba(12, 16, 26, 0.82);
+    background-blend-mode: overlay, normal, normal;
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    box-shadow: var(--shadow-3);
+    border: 1px solid var(--edge-2);
+    animation: scaleIn var(--t-med) var(--ease-spring) both;
+    container-type: size;
+  }
+  :root.py-nofx .py-start { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(12, 16, 26, 0.98); }
+
+  .py-start.is-closing { animation: scaleOut var(--t-fast) var(--ease-soft) forwards; }
+
+  /* Conic-обводка меню */
+  .py-start::before {
+    content: '';
+    position: absolute; inset: -1px;
+    border-radius: inherit; padding: 1.5px;
+    background: conic-gradient(from var(--spin-angle), var(--acc), var(--acc-2), var(--acc));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    animation: spin 9s linear infinite;
+    pointer-events: none;
+  }
+
+  /* Затемнение под меню */
+  .py-start-veil {
+    position: fixed; inset: 0; z-index: 1150;
+    background: rgba(4, 6, 12, 0.5);
+    animation: fadeIn var(--t-med) var(--ease-out) both;
+    backdrop-filter: blur(2px);
+  }
+
+  /* Поисковая пилюля */
+  .py-start-search {
+    display: flex; align-items: center; gap: 10px;
+    height: 52px;
+    padding: 0 20px;
+    border-radius: 28px;
+    background: var(--surface-2);
+    border: 1px solid var(--edge-2);
+    flex: none;
+    transition: border-color var(--t-fast), box-shadow var(--t-fast);
+  }
+  .py-start-search:focus-within { border-color: var(--acc); box-shadow: 0 0 0 4px var(--acc-tint-1); }
+  .py-start-search input { flex: 1; background: none; border: 0; outline: none; color: var(--txt-1); font-size: 15px; }
+  .py-start-search input::placeholder { color: var(--txt-3); }
+
+  .py-start-scroll { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding-right: 4px; }
+
+  .py-start-label { font-size: var(--fs-caption); letter-spacing: 1.2px; text-transform: uppercase; color: var(--txt-3); }
+
+  /* Плитки */
+  .py-tiles { display: grid; grid-template-columns: repeat(4, 140px); gap: 12px; justify-content: center; }
+  .py-tiles--all { grid-template-columns: repeat(5, 96px); }
+
+  .py-tile {
+    position: relative;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    width: 140px; height: 140px;
+    border-radius: var(--r-lg);
+    background: var(--surface-3);
+    border: 1px solid var(--edge-1);
+    color: var(--txt-1);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform var(--t-med) var(--ease-spring), background var(--t-fast), box-shadow var(--t-fast);
+    animation: tileIn var(--t-med) var(--ease-spring) both;
+    animation-delay: calc(var(--i, 0) * 25ms);
+    will-change: transform;
+  }
+  .py-tile--sm { width: 96px; height: 96px; border-radius: var(--r-md); }
+  .py-tile:hover { transform: scale(1.08); background: var(--acc-tint-2); box-shadow: var(--shadow-1); }
+  .py-tile:hover .py-tile-ic { transform: scale(1.15) rotate(-3deg); }
+  .py-tile-ic { transition: transform var(--t-med) var(--ease-spring); color: var(--acc); display: grid; place-items: center; }
+  .py-tile-ic .py-ic { width: 34px; height: 34px; }
+  .py-tile--sm .py-tile-ic .py-ic { width: 26px; height: 26px; }
+  .py-tile-name { font-size: var(--fs-caption); text-align: center; padding: 0 8px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Пузыри «Недавние» */
+  .py-bubbles { display: flex; gap: 12px; overflow-x: auto; padding: 4px 2px 8px; scrollbar-width: none; }
+  .py-bubbles::-webkit-scrollbar { display: none; }
+  .py-bubble {
+    flex: none;
+    width: 92px; height: 92px;
+    border-radius: 26px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    background: var(--surface-3);
+    border: 1px solid var(--edge-1);
+    cursor: pointer;
+    transition: transform var(--t-med) var(--ease-spring), border-color var(--t-fast);
+    animation: tileIn var(--t-med) var(--ease-spring) both;
+    animation-delay: calc(var(--i, 0) * 25ms);
+  }
+  .py-bubble:hover { transform: translateY(-4px) scale(1.05); border-color: var(--edge-acc); }
+  .py-bubble time { font-size: 10px; color: var(--txt-3); }
+
+  /* Строка пользователя */
+  .py-start-user {
+    display: flex; align-items: center; gap: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--edge-1);
+    flex: none;
+  }
+  .py-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, var(--acc), var(--acc-2));
+    color: #fff; font-weight: 700; font-size: 16px;
+    flex: none;
+  }
+  .py-start-power { margin-left: auto; }
+
+  /* Адаптив контейнерных запросов меню */
+  @container (max-width: 640px) {
+    .py-tiles { grid-template-columns: repeat(3, 120px); }
+    .py-tile { width: 120px; height: 120px; }
+    .py-tiles--all { grid-template-columns: repeat(4, 88px); }
+    .py-tile--sm { width: 88px; height: 88px; }
+  }
+}
+
+@media (max-width: 720px) {
+  .py-start { width: 92vw; height: 88vh; padding: 18px 16px 12px; }
+  .py-tiles { grid-template-columns: repeat(3, 1fr); }
+  .py-tile { width: auto; height: 110px; }
+  .py-tiles--all { grid-template-columns: repeat(4, 1fr); }
+  .py-tile--sm { width: auto; height: 84px; }
+}
+@media (max-width: 480px) {
+  .py-tiles { grid-template-columns: repeat(2, 1fr); }
+  .py-tiles--all { grid-template-columns: repeat(2, 1fr); }
+  .py-startbtn { width: 38px; height: 38px; border-radius: 12px; }
+  .py-start-search { height: 46px; border-radius: 24px; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   @layer apps — стили рабочего стола и приложений
+   ════════════════════════════════════════════════════════════ */
+@layer apps {
+  /* Ярлыки на столе */
+  .py-icons-grid {
+    position: absolute; inset: 12px 12px calc(var(--dock-h) + 22px);
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(auto-fill, 92px);
+    grid-auto-columns: 92px;
+    gap: 4px;
+    align-content: start;
+    z-index: 5;
+  }
+  .py-deskicon {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    border-radius: var(--r-sm);
+    padding: 10px 4px;
+    color: var(--txt-1);
+    cursor: pointer;
+    text-align: center;
+    transition: background var(--t-fast), transform var(--t-fast) var(--ease-out);
+    user-select: none;
+  }
+  .py-deskicon:hover { background: var(--acc-tint-1); transform: scale(1.04); }
+  .py-deskicon.is-sel { background: var(--acc-tint-2); outline: 1px solid var(--edge-acc); }
+  .py-deskicon .py-ic { width: 34px; height: 34px; color: var(--acc); }
+  .py-deskicon span { font-size: var(--fs-caption); line-height: 1.25; max-width: 86px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+
+  /* Виджеты рабочего стола */
+  .py-widgets { position: absolute; top: 16px; right: 16px; display: flex; flex-direction: column; gap: 12px; z-index: 4; pointer-events: none; }
+  .py-widget {
+    pointer-events: auto;
+    min-width: 190px;
+    padding: 14px 18px;
+    border-radius: var(--r-md);
+    background: var(--surface-1);
+    border: 1px solid var(--edge-1);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: var(--shadow-1);
+    animation: fadeIn var(--t-slow) var(--ease-out) both;
+  }
+  :root.py-nofx .py-widget { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .py-widget h4 { font-size: var(--fs-caption); color: var(--txt-3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .py-clock-big { font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 1px; }
+  .py-perf-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: var(--fs-caption); color: var(--txt-2); }
+  .py-perf-row .py-prog { flex: 1; }
+
+  /* Фокус-режим стола */
+  .py-root.focus-mode .py-icons-grid,
+  .py-root.focus-mode .py-widgets { opacity: 0.08; pointer-events: none; transition: opacity var(--t-slow); }
+
+  /* ── Терминал ── */
+  .py-term { flex: 1; display: flex; flex-direction: column; background: #05070c; font-family: var(--font-mono); position: relative; container-type: inline-size; }
+  .py-term-out { flex: 1; overflow-y: auto; padding: 14px 16px 6px; font-size: 13px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; color: var(--term-fg, #9ff5b0); }
+  .py-term-out .sys { color: var(--txt-2); }
+  .py-term-out .err { color: var(--err); }
+  .py-term-out .hl { color: var(--acc); }
+  .py-term-line { display: flex; padding: 6px 16px 14px; gap: 8px; align-items: baseline; }
+  .py-term-ps { color: var(--term-fg, #9ff5b0); white-space: nowrap; }
+  .py-term-in { flex: 1; background: none; border: 0; outline: none; color: var(--term-fg, #9ff5b0); caret-color: var(--term-fg, #9ff5b0); font-family: inherit; font-size: 13px; }
+  /* CRT-сканлайны */
+  .py-term::after {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 3px);
+    mix-blend-mode: overlay;
+  }
+  .py-term[data-theme="amber"] { --term-fg: #ffc46b; }
+  .py-term[data-theme="white"] { --term-fg: #dbe4f2; }
+  .py-term[data-theme="cyan"]  { --term-fg: #6be5ff; }
+
+  @container (max-width: 420px) { .py-term-out, .py-term-line { font-size: 11.5px; } }
+
+  /* ── Файлы ── */
+  .py-files { flex: 1; display: flex; min-height: 0; container-type: inline-size; }
+  .py-files-side { width: 170px; flex: none; padding: 10px 8px; border-right: 1px solid var(--edge-1); display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+  .py-files-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .py-crumbs { display: flex; align-items: center; gap: 2px; padding: 10px 14px; flex-wrap: wrap; }
+  .py-crumb { padding: 4px 10px; border-radius: 99px; color: var(--txt-2); font-size: var(--fs-body); cursor: pointer; transition: background var(--t-fast); }
+  .py-crumb:hover { background: var(--acc-tint-2); color: var(--txt-1); }
+  .py-crumb.cur { color: var(--txt-1); font-weight: 600; }
+  .py-frow {
+    display: grid; grid-template-columns: 28px 1fr 90px 110px; align-items: center; gap: 10px;
+    padding: 8px 14px; border-radius: var(--r-xs); cursor: pointer;
+    transition: background var(--t-fast);
+  }
+  .py-frow:hover { background: var(--acc-tint-1); }
+  .py-frow.is-sel { background: var(--acc-tint-2); }
+  .py-frow .py-ic { color: var(--acc); }
+  .py-frow small { color: var(--txt-3); font-size: var(--fs-caption); }
+  .py-files-toolbar { display: flex; gap: 6px; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--edge-1); }
+  @container (max-width: 560px) { .py-files-side { display: none; } .py-frow { grid-template-columns: 28px 1fr 90px; } .py-frow small:last-of-type { display: none; } }
+
+  /* ── Редактор ── */
+  .py-editor { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .py-ed-bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--edge-1); }
+  .py-ed-wrap { flex: 1; display: flex; min-height: 0; position: relative; }
+  .py-ed-gutter { flex: none; width: 46px; overflow: hidden; background: var(--bg-1); color: var(--txt-3); font-family: var(--font-mono); font-size: 13px; line-height: 1.5; text-align: right; padding: 10px 8px 10px 0; user-select: none; }
+  .py-ed-area { flex: 1; background: var(--bg-1); border: 0; outline: none; resize: none; color: var(--txt-1); font-family: var(--font-mono); font-size: 13px; line-height: 1.5; padding: 10px 12px; tab-size: 4; white-space: pre; overflow: auto; }
+  .py-ed-map { flex: none; width: 60px; background: var(--bg-1); border-left: 1px solid var(--edge-1); }
+  .py-ed-status { display: flex; gap: 16px; padding: 6px 12px; border-top: 1px solid var(--edge-1); font-size: var(--fs-caption); color: var(--txt-3); }
+
+  /* ── Калькулятор ── */
+  .py-calc { flex: 1; display: flex; flex-direction: column; padding: 14px; gap: 12px; container-type: inline-size; }
+  .py-calc-disp { background: var(--bg-1); border: 1px solid var(--edge-1); border-radius: var(--r-md); padding: 14px 16px; text-align: right; }
+  .py-calc-disp .expr { font-size: var(--fs-caption); color: var(--txt-3); min-height: 16px; }
+  .py-calc-disp .val { font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; }
+  .py-calc-keys { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .py-key { border-radius: var(--r-sm); background: var(--bg-2); border: 1px solid var(--edge-1); font-size: 17px; padding: 12px 0; cursor: pointer; transition: background var(--t-fast), transform var(--t-fast) var(--ease-spring); color: var(--txt-1); }
+  .py-key:hover { background: var(--acc-tint-2); }
+  .py-key:active { transform: scale(0.93); }
+  .py-key.op { color: var(--acc); }
+  .py-key.eq { background: var(--acc); color: #fff; grid-column: span 2; }
+  .py-key.sci { font-size: 13px; color: var(--txt-2); }
+  .py-calc-keys.is-sci { grid-template-columns: repeat(6, 1fr); }
+  .py-calc-hist { max-height: 120px; overflow-y: auto; font-size: var(--fs-caption); color: var(--txt-3); display: flex; flex-direction: column; gap: 3px; }
+
+  /* ── Заметки ── */
+  .py-notes { flex: 1; display: flex; min-height: 0; container-type: inline-size; }
+  .py-notes-side { width: 210px; flex: none; border-right: 1px solid var(--edge-1); display: flex; flex-direction: column; }
+  .py-notes-list { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+  .py-note-item { padding: 10px 12px; border-radius: var(--r-sm); cursor: pointer; transition: background var(--t-fast); border: 1px solid transparent; }
+  .py-note-item:hover { background: var(--acc-tint-1); }
+  .py-note-item.cur { background: var(--acc-tint-2); border-color: var(--edge-acc); }
+  .py-note-item b { display: block; font-size: var(--fs-body); margin-bottom: 2px; }
+  .py-note-item span { font-size: var(--fs-caption); color: var(--txt-3); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .py-notes-edit { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .py-notes-prev { flex: 1; overflow-y: auto; padding: 18px 22px; line-height: 1.65; }
+  .py-notes-prev h1 { font-size: 21px; margin: 8px 0; }
+  .py-notes-prev h2 { font-size: 17px; margin: 8px 0; color: var(--acc); }
+  .py-notes-prev h3 { font-size: 15px; margin: 6px 0; }
+  .py-notes-prev code { font-family: var(--font-mono); background: var(--bg-2); padding: 1px 6px; border-radius: 6px; font-size: 12px; }
+  .py-notes-prev li { margin-left: 18px; list-style: disc; }
+  @container (max-width: 520px) { .py-notes-side { width: 140px; } }
+
+  /* ── Настройки ── */
+  .py-set { flex: 1; display: flex; min-height: 0; container-type: inline-size; }
+  .py-set-nav { width: 190px; flex: none; padding: 12px 8px; border-right: 1px solid var(--edge-1); display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+  .py-set-nav button { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--r-sm); color: var(--txt-2); text-align: left; transition: background var(--t-fast), color var(--t-fast); }
+  .py-set-nav button:hover { background: var(--acc-tint-1); color: var(--txt-1); }
+  .py-set-nav button.cur { background: var(--acc-tint-2); color: var(--acc); font-weight: 600; }
+  .py-set-page { flex: 1; overflow-y: auto; padding: 20px 26px; min-width: 0; }
+  .py-set-row { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--edge-1); }
+  .py-set-row .grow { flex: 1; min-width: 0; }
+  .py-acc-dot { width: 34px; height: 34px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: transform var(--t-fast) var(--ease-spring), border-color var(--t-fast); }
+  .py-acc-dot:hover { transform: scale(1.15); }
+  .py-acc-dot.cur { border-color: var(--txt-1); }
+  .py-wall-thumb { width: 74px; height: 48px; border-radius: var(--r-xs); cursor: pointer; border: 2px solid var(--edge-1); transition: transform var(--t-fast) var(--ease-spring), border-color var(--t-fast); }
+  .py-wall-thumb:hover { transform: scale(1.08); }
+  .py-wall-thumb.cur { border-color: var(--acc); box-shadow: 0 0 0 3px var(--acc-tint-2); }
+  .py-kbd { font-family: var(--font-mono); font-size: 11px; background: var(--bg-2); border: 1px solid var(--edge-2); border-bottom-width: 2px; border-radius: 6px; padding: 2px 7px; color: var(--txt-2); }
+  @container (max-width: 620px) { .py-set-nav { width: 60px; } .py-set-nav button span { display: none; } .py-set-page { padding: 14px; } }
+
+  /* ── О системе ── */
+  .py-about { flex: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+  .py-about-logo { width: 92px; height: 92px; color: var(--acc); animation: breathe 3.5s var(--ease-soft) infinite; filter: drop-shadow(0 0 24px var(--acc-glow)); }
+  .py-spec { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; width: min(440px, 100%); text-align: left; }
+  .py-spec div { display: flex; justify-content: space-between; padding: 7px 12px; background: var(--bg-2); border-radius: var(--r-xs); font-size: var(--fs-body); }
+  .py-spec b { color: var(--txt-3); font-weight: 500; }
+
+  /* ── Plugin Studio ── */
+  .py-studio { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .py-studio-body { flex: 1; display: flex; min-height: 0; }
+  .py-studio-code { flex: 1; min-width: 0; display: flex; }
+  .py-studio-side { width: 280px; flex: none; border-left: 1px solid var(--edge-1); overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .py-plug-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: var(--r-sm); border: 1px solid var(--edge-1); background: var(--bg-2); }
+  .py-plug-item .py-ic { color: var(--acc); }
+  .py-doc { flex: 1; overflow-y: auto; padding: 20px 26px; line-height: 1.65; }
+  .py-doc pre { background: var(--bg-1); border: 1px solid var(--edge-1); border-radius: var(--r-sm); padding: 12px 14px; font-family: var(--font-mono); font-size: 12px; overflow-x: auto; margin: 8px 0; color: var(--txt-2); }
+  .py-doc h3 { color: var(--acc); margin: 16px 0 6px; font-size: var(--fs-title); }
+
+  /* ── SN-приложения ── */
+  .py-sn { flex: 1; display: flex; flex-direction: column; min-height: 0; padding: 14px; gap: 12px; container-type: inline-size; }
+  .py-sn-head { display: flex; align-items: center; gap: 10px; }
+  .py-sn-head h3 { font-size: var(--fs-title); }
+
+  /* Музыка */
+  .py-tunes-now { display: flex; gap: 16px; align-items: center; }
+  .py-tunes-art { width: 92px; height: 92px; border-radius: var(--r-md); background: linear-gradient(135deg, var(--acc), var(--acc-2)); display: grid; place-items: center; color: #fff; flex: none; animation: breathe 4s var(--ease-soft) infinite; }
+  .py-tunes-eq { display: flex; align-items: flex-end; gap: 3px; height: 34px; }
+  .py-tunes-eq i { width: 5px; border-radius: 2px; background: var(--acc); height: 30%; transition: height 120ms linear; }
+  .py-tunes-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+  .py-tunes-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--r-xs); cursor: pointer; }
+  .py-tunes-row:hover { background: var(--acc-tint-1); }
+  .py-tunes-row.cur { background: var(--acc-tint-2); color: var(--acc); }
+  .py-osci { width: 100%; height: 60px; border-radius: var(--r-sm); background: var(--bg-1); border: 1px solid var(--edge-1); }
+
+  /* Canvas / Pixel */
+  .py-canvas-wrap { flex: 1; display: flex; min-height: 0; gap: 10px; }
+  .py-canvas-stage { flex: 1; min-width: 0; background: var(--bg-1); border-radius: var(--r-md); border: 1px solid var(--edge-1); overflow: hidden; display: grid; place-items: center; }
+  .py-tools { width: 56px; flex: none; display: flex; flex-direction: column; gap: 6px; align-items: center; }
+  .py-swatch { width: 26px; height: 26px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; }
+  .py-swatch.cur { border-color: var(--txt-1); }
+  .py-pixel-grid { image-rendering: pixelated; border-radius: var(--r-xs); cursor: crosshair; }
+
+  /* Календарь */
+  .py-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; flex: 1; }
+  .py-cal-day { border-radius: var(--r-xs); background: var(--bg-2); padding: 6px; min-height: 58px; font-size: var(--fs-caption); cursor: pointer; transition: background var(--t-fast); }
+  .py-cal-day:hover { background: var(--acc-tint-2); }
+  .py-cal-day.today { outline: 2px solid var(--acc); }
+  .py-cal-day.has-ev::after { content: ''; display: block; width: 6px; height: 6px; border-radius: 50%; background: var(--acc); margin-top: 4px; }
+  .py-cal-wday { text-align: center; font-size: 10px; color: var(--txt-3); padding: 4px 0; text-transform: uppercase; }
+
+  /* Почта */
+  .py-mail { flex: 1; display: flex; min-height: 0; }
+  .py-mail-side { width: 150px; flex: none; border-right: 1px solid var(--edge-1); padding: 10px 8px; display: flex; flex-direction: column; gap: 2px; }
+  .py-mail-list { flex: 1; overflow-y: auto; width: 260px; flex: none; border-right: 1px solid var(--edge-1); }
+  .py-mail-row { padding: 10px 12px; border-bottom: 1px solid var(--edge-1); cursor: pointer; }
+  .py-mail-row:hover { background: var(--acc-tint-1); }
+  .py-mail-row.cur { background: var(--acc-tint-2); }
+  .py-mail-row.unread b::before { content: '● '; color: var(--acc); }
+  .py-mail-read { flex: 1; overflow-y: auto; padding: 18px 22px; min-width: 0; }
+  @container (max-width: 640px) { .py-mail-side { display: none; } .py-mail-list { width: 180px; } }
+
+  /* Задачи (канбан) */
+  .py-kanban { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; min-height: 0; }
+  .py-kcol { background: var(--bg-1); border: 1px solid var(--edge-1); border-radius: var(--r-md); padding: 10px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+  .py-kcol.drag-over { border-color: var(--acc); background: var(--acc-tint-1); }
+  .py-kcol h4 { font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: 1px; color: var(--txt-3); }
+  .py-kcard { background: var(--bg-2); border: 1px solid var(--edge-2); border-radius: var(--r-sm); padding: 10px 12px; font-size: var(--fs-body); cursor: grab; }
+  .py-kcard:active { cursor: grabbing; }
+  .py-kcard.dragging { opacity: 0.4; }
+
+  /* Хранилище паролей */
+  .py-vault-lock { max-width: 320px; margin: auto; display: flex; flex-direction: column; gap: 12px; align-items: center; padding: 30px; text-align: center; }
+  .py-vault-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+  .py-vault-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: var(--r-sm); background: var(--bg-2); border: 1px solid var(--edge-1); }
+
+  /* Переводчик */
+  .py-trans-cols { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; min-height: 0; }
+  .py-trans-cols textarea { min-height: 120px; }
+
+  /* Секретарь */
+  .py-rem-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--r-sm); background: var(--bg-2); border: 1px solid var(--edge-1); }
+  .py-rem-row.done { opacity: 0.5; text-decoration: line-through; }
+
+  /* Игры */
+  .py-game-stage { display: grid; place-items: center; flex: 1; min-height: 0; }
+  .py-game-canvas { border-radius: var(--r-md); background: #05070c; border: 1px solid var(--edge-acc); box-shadow: 0 0 30px color-mix(in srgb, var(--acc) 18%, transparent); }
+  .py-t2048 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: var(--bg-1); padding: 10px; border-radius: var(--r-md); border: 1px solid var(--edge-1); }
+  .py-t2048-cell { aspect-ratio: 1; min-width: 52px; border-radius: var(--r-sm); display: grid; place-items: center; font-weight: 800; font-size: 20px; background: var(--bg-2); color: var(--txt-1); transition: transform var(--t-fast) var(--ease-spring); }
+  .py-t2048-cell.new { animation: scaleIn var(--t-fast) var(--ease-spring); }
+
+  /* QR */
+  .py-qr-out { display: grid; place-items: center; flex: 1; }
+  .py-qr-canvas { image-rendering: pixelated; border-radius: var(--r-md); border: 8px solid #fff; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   @layer modals — модалки, контекст, тосты, палитра, трей
+   ════════════════════════════════════════════════════════════ */
+@layer modals {
+  /* Модальные диалоги */
+  .py-modal-veil {
+    position: fixed; inset: 0; z-index: 1500;
+    background: rgba(4, 6, 12, 0.55);
+    display: grid; place-items: center;
+    animation: fadeIn var(--t-fast) var(--ease-out) both;
+  }
+  .py-modal {
+    width: min(460px, 92vw);
+    border-radius: var(--r-lg);
+    background: var(--surface-2);
+    border: 1px solid var(--edge-2);
+    box-shadow: var(--shadow-3);
+    padding: 22px;
+    display: flex; flex-direction: column; gap: 14px;
+    animation: scaleIn var(--t-med) var(--ease-spring) both;
+  }
+  .py-modal h3 { font-size: var(--fs-title); }
+  .py-modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
+
+  /* Контекстное меню */
+  .py-ctx {
+    position: fixed; z-index: 1600;
+    min-width: 200px;
+    padding: 6px;
+    border-radius: var(--r-sm);
+    background: var(--surface-2);
+    border: 1px solid var(--edge-2);
+    box-shadow: var(--shadow-2);
+    animation: scaleIn var(--t-fast) var(--ease-spring) both;
+    transform-origin: var(--ctx-ox, top left);
+  }
+  .py-ctx-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 12px; border-radius: var(--r-xs); color: var(--txt-2); text-align: left; transition: background var(--t-fast), color var(--t-fast); }
+  .py-ctx-item:hover { background: var(--acc-tint-2); color: var(--txt-1); }
+  .py-ctx-item.danger { color: var(--err); }
+  .py-ctx-item.danger:hover { background: color-mix(in srgb, var(--err) 16%, transparent); }
+  .py-ctx-sep { height: 1px; background: var(--edge-1); margin: 5px 8px; }
+
+  /* Тосты */
+  .py-toast-stack { position: fixed; right: 16px; bottom: calc(var(--dock-h) + 22px); z-index: 1700; display: flex; flex-direction: column-reverse; gap: 10px; max-width: min(340px, 90vw); }
+  .py-toast {
+    position: relative;
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 14px 16px 18px;
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    backdrop-filter: blur(24px) saturate(170%);
+    -webkit-backdrop-filter: blur(24px) saturate(170%);
+    border: 1px solid var(--edge-2);
+    box-shadow: var(--shadow-2);
+    animation: slideRight var(--t-med) var(--ease-spring) both;
+    overflow: hidden;
+  }
+  :root.py-nofx .py-toast { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .py-toast.is-out { animation: fadeOut var(--t-fast) var(--ease-soft) forwards; }
+  .py-toast-ic { width: 34px; height: 34px; border-radius: var(--r-xs); display: grid; place-items: center; background: var(--acc-tint-2); color: var(--acc); flex: none; }
+  .py-toast b { display: block; font-size: var(--fs-body); margin-bottom: 2px; }
+  .py-toast p { font-size: var(--fs-caption); color: var(--txt-2); line-height: 1.45; }
+  .py-toast-prog { position: absolute; left: 0; bottom: 0; height: 3px; background: linear-gradient(90deg, var(--acc), var(--acc-2)); animation: toastProg linear forwards; }
+
+  /* Tooltip */
+  .py-tip {
+    position: fixed; z-index: 1800;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: var(--bg-2);
+    border: 1px solid var(--edge-2);
+    font-size: var(--fs-caption);
+    color: var(--txt-1);
+    box-shadow: var(--shadow-1);
+    pointer-events: none;
+    animation: fadeIn var(--t-fast) var(--ease-out) both;
+    white-space: nowrap;
+  }
+
+  /* Command Palette (Ctrl+K) */
+  .py-pal-veil { position: fixed; inset: 0; z-index: 1400; background: rgba(4, 6, 12, 0.5); display: flex; justify-content: center; padding-top: 14vh; animation: fadeIn var(--t-fast) var(--ease-out) both; }
+  .py-pal {
+    width: min(620px, 94vw);
+    height: fit-content;
+    max-height: 62vh;
+    border-radius: var(--r-lg);
+    background: var(--surface-2);
+    backdrop-filter: blur(34px) saturate(180%);
+    -webkit-backdrop-filter: blur(34px) saturate(180%);
+    border: 1px solid var(--edge-2);
+    box-shadow: var(--shadow-3);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    animation: slideDown var(--t-med) var(--ease-spring) both;
+  }
+  :root.py-nofx .py-pal { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .py-pal-input { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--edge-1); }
+  .py-pal-input input { flex: 1; background: none; border: 0; outline: none; color: var(--txt-1); font-size: 16px; }
+  .py-pal-list { flex: 1; overflow-y: auto; padding: 8px; }
+  .py-pal-sec { padding: 8px 12px 4px; font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--txt-3); }
+  .py-pal-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--r-sm); cursor: pointer; color: var(--txt-2); }
+  .py-pal-item .py-ic { color: var(--acc); }
+  .py-pal-item.sel { background: var(--acc-tint-2); color: var(--txt-1); }
+  .py-pal-item kbd { margin-left: auto; }
+
+  /* Tray Center — панель быстрых действий справа */
+  .py-tray-panel {
+    position: fixed; right: 14px; bottom: calc(var(--dock-h) + 20px);
+    width: min(360px, 94vw);
+    max-height: 70vh;
+    z-index: 1300;
+    border-radius: var(--r-xl);
+    background: var(--surface-2);
+    backdrop-filter: blur(34px) saturate(180%);
+    -webkit-backdrop-filter: blur(34px) saturate(180%);
+    border: 1px solid var(--edge-2);
+    box-shadow: var(--shadow-3);
+    padding: 18px;
+    display: flex; flex-direction: column; gap: 14px;
+    animation: slideUp var(--t-med) var(--ease-spring) both;
+    overflow-y: auto;
+  }
+  :root.py-nofx .py-tray-panel { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .py-qgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .py-qtile { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; padding: 12px; border-radius: var(--r-md); background: var(--bg-2); border: 1px solid var(--edge-1); color: var(--txt-2); font-size: var(--fs-caption); cursor: pointer; transition: all var(--t-fast); }
+  .py-qtile:hover { border-color: var(--edge-acc); }
+  .py-qtile[aria-pressed="true"] { background: var(--acc); color: #fff; border-color: transparent; }
+  .py-notif { display: flex; gap: 10px; padding: 10px 12px; border-radius: var(--r-sm); background: var(--bg-2); border: 1px solid var(--edge-1); align-items: flex-start; }
+  .py-notif time { margin-left: auto; font-size: 10px; color: var(--txt-3); flex: none; }
+
+  /* OOBE — мастер первого запуска */
+  .py-oobe {
+    position: fixed; inset: 0; z-index: 2000;
+    background: radial-gradient(120% 100% at 50% 0%, #101736 0%, var(--bg-0) 70%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 22px; padding: 30px;
+    animation: fadeIn var(--t-slow) var(--ease-out) both;
+  }
+  .py-oobe-card { width: min(560px, 94vw); display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; animation: scaleIn var(--t-med) var(--ease-spring) both; }
+  .py-oobe-title { font-size: var(--fs-hero); font-weight: 800; background: linear-gradient(90deg, var(--acc), var(--acc-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .py-oobe-sub { color: var(--txt-2); line-height: 1.6; max-width: 420px; }
+  .py-oobe-steps { display: flex; gap: 7px; }
+  .py-oobe-steps i { width: 22px; height: 5px; border-radius: 99px; background: var(--edge-2); transition: background var(--t-fast), transform var(--t-fast); }
+  .py-oobe-steps i.done { background: var(--acc); }
+  .py-oobe-steps i.cur { background: var(--acc-2); transform: scaleX(1.4); }
+  .py-oobe-actions { display: flex; gap: 10px; margin-top: 6px; }
+  .py-oobe-logo { width: 84px; height: 84px; color: var(--acc); animation: breathe 3s var(--ease-soft) infinite; filter: drop-shadow(0 0 20px var(--acc-glow)); }
+
+  /* Boot screen */
+  .py-boot {
+    position: fixed; inset: 0; z-index: 2100;
+    background: var(--bg-0);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+    transition: opacity var(--t-slow) var(--ease-soft), visibility var(--t-slow);
+  }
+  .py-boot.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
+  .py-boot-logo { width: 96px; height: 96px; color: var(--acc); animation: breathe 2s var(--ease-soft) infinite; filter: drop-shadow(0 0 26px var(--acc-glow)); }
+  .py-boot-stage { color: var(--txt-3); font-size: var(--fs-body); font-family: var(--font-mono); min-height: 18px; }
+  .py-boot .py-prog { width: min(320px, 70vw); }
+}
+
+/* ════════════════════════════════════════════════════════════
+   @layer overrides — точечные исправления
+   ════════════════════════════════════════════════════════════ */
+@layer overrides {
+  /* Цветная заглушка-иконка вместо «серой вилки» */
+  .py-ic-fallback { display: grid; place-items: center; border-radius: 22%; color: #fff; font-weight: 800; width: 20px; height: 20px; font-size: 11px; flex: none; }
+  .py-ic-fallback--lg { width: 34px; height: 34px; font-size: 17px; border-radius: 26%; }
+
+  /* SVG-заглушка с градиентом по хешу имени */
+  svg.py-ic-gen text { font-family: var(--font-ui); font-weight: 800; fill: #fff; }
+
+  /* Окно не должно залезать под док при перетаскивании — обеспечивает JS, здесь только курсор блокировки */
+  body.is-windowing, body.is-windowing * { user-select: none; }
+
+  /* Единственные обоснованные !important: подавление нативных подсветок на touch */
+  .py-tile, .py-dockitem, .py-deskicon { -webkit-tap-highlight-color: transparent !important; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   @keyframes — глобальные анимации
+   ════════════════════════════════════════════════════════════ */
+@keyframes fadeIn    { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeOut   { from { opacity: 1; } to { opacity: 0; } }
+@keyframes scaleIn   { from { opacity: 0; transform: scale(0.86); } to { opacity: 1; transform: scale(1); } }
+@keyframes scaleOut  { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.9); } }
+@keyframes slideUp   { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-26px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideLeft { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slideRight{ from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes tileIn    { from { opacity: 0; transform: translateY(14px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes spin      { to { --spin-angle: 360deg; } }
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 var(--acc-glow); }
+  70%  { box-shadow: 0 0 0 14px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+@keyframes ripple    { to { transform: scale(2.6); opacity: 0; } }
+@keyframes breathe   { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.06); opacity: 0.85; } }
+@keyframes blink     { 0%, 100% { opacity: 1; } 50% { opacity: 0.15; } }
+@keyframes toastProg { from { width: 100%; } to { width: 0%; } }
+@keyframes shineMove { from { --shine-position: -40%; } to { --shine-position: 140%; } }
+
+/* Shine-эффект для крупных плиток OOBE/boot */
+.py-shine { position: relative; overflow: hidden; }
+.py-shine::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(100deg, transparent var(--shine-position), rgba(255,255,255,0.14) calc(var(--shine-position) + 18%), transparent calc(var(--shine-position) + 36%));
+  animation: shineMove 2.6s var(--ease-soft) infinite;
+  pointer-events: none;
+}
+
+/* ════════════════════════════════════════════════════════════
+   @layer accessibility
+   ════════════════════════════════════════════════════════════ */
+@layer accessibility {
+  .py-sr-only {
+    position: absolute; width: 1px; height: 1px;
+    clip-path: inset(50%); overflow: hidden;
+    white-space: nowrap;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms;
+      animation-iteration-count: 1;
+      transition-duration: 0.01ms;
+    }
+    .py-win.is-focus::before { animation: none; opacity: 0.7; }
+    .py-start::before { animation: none; }
+  }
+
+  @media (prefers-contrast: more) {
+    :root {
+      --edge-1: rgba(255, 255, 255, 0.22);
+      --edge-2: rgba(255, 255, 255, 0.4);
+      --txt-2: #d3dbec;
+      --txt-3: #aab6cb;
+    }
+    .py-win, .py-start, .py-taskbar, .py-toast, .py-pal, .py-tray-panel { border-width: 2px; }
+  }
+
+  /* Клавиатурная навигация подсвечивает текущую плитку */
+  .py-tile.kbd-focus, .py-pal-item.kbd-focus { outline: 2px solid var(--acc); outline-offset: 2px; }
+}
